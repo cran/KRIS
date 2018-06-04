@@ -30,7 +30,7 @@ is enable or not, optained PCs are the same. Default = TRUE.}
 }
 \value{
 The returned value is a list with 2 objects, \code{$PC},
-\code{$evalue},
+\code{$evalue}:
 \itemize{
 \item \code{$PC} is a PC matrix which rows represent samples and columns
 represent PCs.
@@ -84,4 +84,7 @@ print(PCs$evalue[1:3])
 
 plot3views(PCs$PC[,1:3], sample_labels)
 }
+}
+\seealso{
+\code{\link{cal.pc.projection}}
 }

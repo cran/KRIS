@@ -21,7 +21,7 @@
 #'
 #' @name simsnp
 #' @docType data
-#' @format A list with with 3 objects
+#' @format A list with 3 objects
 #' @seealso \code{\link{sample_labels}}
 #' @usage data(example_SNP)
 #' @keywords simsnp

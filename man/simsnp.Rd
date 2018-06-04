@@ -4,7 +4,7 @@
 \name{simsnp}
 \alias{simsnp}
 \title{Synthetic dataset containing single nucleotide polymorphisms (SNP)}
-\format{A list with with 3 objects}
+\format{A list with 3 objects}
 \usage{
 data(example_SNP)
 }

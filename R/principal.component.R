@@ -20,7 +20,7 @@
 #' is enable or not, optained PCs are the same. Default = TRUE.
 #'
 #' @return The returned value is a list with 2 objects, \code{$PC},
-#' \code{$evalue},
+#' \code{$evalue}:
 #' \itemize{
 #' \item \code{$PC} is a PC matrix which rows represent samples and columns
 #' represent PCs.
@@ -32,6 +32,7 @@
 #'
 #' @import rARPACK
 #'
+#' @seealso \code{\link{cal.pc.projection}}
 #' @examples
 #'
 #' #Load simulated dataset
@@ -78,18 +79,6 @@
 
 cal.pc.linear <- function(X, PCscore = TRUE, no.pc = NA, data.type = "linear",
                           XXT = TRUE){
-
-  replace.missing <- function(X,missing=NA,rep){
-    if (is.na(missing)){
-      idx = which(is.na(X))
-      X[idx] = rep[idx]
-    }else{
-      idx = which(X == missing)
-      X[idx] = rep[idx]
-    }
-    return(X)
-  }
-
 
   #Resolve missing value by median
   #cat(paste0("Missing values are set as medians\n"))
@@ -142,4 +131,153 @@ cal.pc.linear <- function(X, PCscore = TRUE, no.pc = NA, data.type = "linear",
   return(list("PC"=PCs,"evalue"=eigen.value))
 }
 
+
+#' Calculate linear principal component analysis (PCA) with projection method
+#' for Single-nucleotide polymorphism (SNP) dataset.
+#'
+#' In order to perform the projection method, disease status for all individuals
+#' are required. First, PCA is performed only in control group, then project
+#' the scores from control group into case group.
+#'
+#' @param X A data matrix which rows represent samples and columns represent
+#' features.
+#' @param status A vector of numbers that contains disease status for all
+#' individuals. For control group, the status is "1", and "2" for case group.
+#' Individuals with unknown status (other numbers) are ignored and excluded from
+#' the result.
+#' @param individual_id A vector of charactors that contains individuals IDs
+#' @param labels A vector of charactors that contains labels for all lindividuals
+#' @param no.pc A number of PCs to be calculated. If no.pc is set, PCs are
+#' patially calculated. Otherwise all PCs are obtained after calculation.
+#' Default = NA.
+#' @param data.type To specify a type of data matrix X. It can be set to
+#' "linear" and "snp". Default = "linear".
+#'
+#' @return The returned value is a list with 4 objects, \code{$PC},
+#' \code{$id}, \code{$label},and \code{$status}. Individuals with unknown status
+#' are excluded.
+#' \itemize{
+#' \item \code{$PC} is a PC matrix which rows represent samples and columns
+#' represent PCs.
+#' \item \code{$individual_id} is a vector of charactors that contains individuals IDs.
+#' \item \code{$label} is a vector of charactors that contains labels for all lindividuals.
+#' \item \code{$status} is a vector of numbers that contains disease status for all.
+#' individuals.
+#' }
+#'
+#' @export
+#' @import rARPACK
+#'
+#' @seealso \code{\link{cal.pc.linear}}
+#'
+#' @examples
+#' \donttest{
+#'
+#' data(example_SNP)
+#'
+#' #Create a random list of disease status, 1 = Control and 2 = Case
+#'
+#' ind_status <- sample(c(1,2), size = length(sample_labels), replace = T)
+#'
+#' PCs <- cal.pc.projection(simsnp$snp, status = ind_status,
+#' labels = sample_labels)
+#' summary(PCs)
+#'
+#' #Preview $PC
+#' print(PCs$PC[1:5,1:3])
+#'
+#' #Preview $status
+#' print(PCs$status[1:3])
+#'
+#' plot3views(PCs$PC[,1:3], PCs$label)
+#'
+#' #Calculate the top 3 PCs
+#'
+#' PCs <- cal.pc.projection(simsnp$snp, status = ind_status,
+#' labels = sample_labels, no.pc = 3)
+#' summary(PCs)
+#'
+#' #Preview $PC
+#' print(PCs$PC[1:5,1:3])
+#'
+#' plot3views(PCs$PC[,1:3], PCs$label)
+#'
+#' }
+#'
+cal.pc.projection <- function(X, status, individual_id = NULL, labels = NULL,
+                              no.pc = NA, data.type = "linear"){
+
+  #Resolve missing value by median
+
+  X.median = apply(X,2,median,na.rm=TRUE)
+  missing.char=NA
+  X = t(apply(X,1,replace.missing,missing=missing.char,rep=X.median))
+
+  if (data.type == "snp"){
+    XPi = (colSums(X)+1)/(2+(2*dim(X)[1]))
+    XSD = (XPi * (1-XPi))^0.5
+  }else{
+    #Assume linear
+    XSD = apply(X,2,sd)
+  }
+
+  X.con = X[which(status==1),]
+  X.case = X[which(status==2),]
+
+  if (!is.null(labels)){
+    new.pop = labels[which(status==1)]
+    tmp.pop = labels[which(status==2)]
+    new.pop = c(new.pop,tmp.pop)
+  }else{
+    new.pop = NULL
+  }
+
+  if (!is.null(individual_id)){
+    new.id = individual_id[which(status==1)]
+    tmp.id = individual_id[which(status==2)]
+    new.id = c(new.id,tmp.id)
+  }else{
+    new.id = NULL
+  }
+
+  X = X.con
+
+  XPi = (colSums(X)+1)/(2+(2*dim(X)[1]))
+  XSD = (XPi * (1-XPi))^0.5
+
+  XCM = colMeans(X)
+  A = t((t(X)-XCM)/XSD)
+  A = A[,colSums(is.na(A))<nrow(A)]
+
+  if (is.na(no.pc)){
+    no.pc = dim(A)[1]
+  }
+
+  AA=A %*% t(A)
+  evv = eigs_sym(AA, k=no.pc)
+  eigen.value = evv$values
+  PCs = evv$vectors
+  B.T=diag(1/sqrt(eigen.value)) %*% t(PCs) %*% A
+
+  PCcon=A %*% t(B.T)
+
+  X = X.case
+
+  XPi = (colSums(X)+1)/(2+(2*dim(X)[1]))
+  XSD = (XPi * (1-XPi))^0.5
+
+  XCM = colMeans(X)
+  A = t((t(X)-XCM)/XSD)
+  A = A[,colSums(is.na(A))<nrow(A)]
+
+  PCcase=A %*% t(B.T)
+
+  label.status=rep('control',dim(PCcon)[1])
+  tmp.label=rep('case',dim(PCcase)[1])
+  label.status = c(label.status,tmp.label)
+
+  PC_project = rbind(PCcon,PCcase)
+
+  return(list("PC"=PC_project,"id"=new.id,"label"=new.pop,"status"=label.status))
+}
 

@@ -13,6 +13,7 @@
 #' Here is the list of functions in the R package \pkg{KRIS}:
 #' \itemize{
 #' \item \code{\link{cal.pc.linear}}
+#' \item \code{\link{cal.pc.projection}}
 #' \item \code{\link{fst.each.snp.hudson}}
 #' \item \code{\link{fst.hudson}}
 #' \item \code{\link{plot3views}}

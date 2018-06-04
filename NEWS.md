@@ -1,7 +1,7 @@
 ---
 title: "NEWS"
 author: "Kridsadakorn Chaichoompu"
-date: "27/04/2018"
+date: "04/06/2018"
 output:
   html_document:
     keep_md: yes
@@ -12,6 +12,45 @@ output:
 ---
 
 
+
+# KRIS 1.1.1
+
+## Updates
+
+* Updated and added more examples in plot3view
+
+# KRIS 1.1.0
+
+## New features
+
+* Added the function ```cal.pc.projection``` 
+
+## Updates
+
+* Moved ```replace.missing``` to for_parallel.R from principal.component.R
+
+## Fixed bugs
+
+* Fixed bugs in test_plot3views.R
+
+# KRIS 1.0.4
+
+## Updates
+
+* Changed URL in the CITATION file from Gitlab to CRAN
+* Changed email in the DESCRIPTION file from Gmail to Official email
+* Fixed misspelling in a manual of data
+
+---
+
+# KRIS 1.0.3
+
+## Updates
+
+* Updated URLs and added details of package in the DESCRIPTION file
+* Updated manual of all functions according from CRAN's comments
+
+---
 
 # KRIS 1.0.2
 
@@ -29,7 +68,7 @@ output:
 
 ---
 
-# KRIS 1.0.0
+# KRIS 1.0.0.0
 
 ## Initial functions
 
