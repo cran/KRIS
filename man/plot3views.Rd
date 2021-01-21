@@ -4,7 +4,14 @@
 \alias{plot3views}
 \title{Create scatter plots in three views.}
 \usage{
-plot3views(X, labels, col.pat.table = NA, only.row = NA)
+plot3views(
+  X,
+  labels,
+  only.row = NA,
+  plot.legend = NA,
+  plot.pattern = NA,
+  plot.color = NA
+)
 }
 \arguments{
 \item{X}{A matrix or a data.frame that contains at least 3 columns of numeric
@@ -15,13 +22,14 @@ used.}
 elements should be of type "character" (as.character). The length of
 vector equals the number of rows in X.}
 
-\item{col.pat.table}{A data.frame that associates colors and patterns to row
-labels (see labels before). It needs to contain 3 columns which represent
-unique labels (column 1) and associated patterns (column 2) and colors
-(column 3). Default = NA.}
-
 \item{only.row}{A vector that contains subset of row numbers that are
 selected to be plotted. Default = NA.}
+
+\item{plot.legend}{A vector of characters representing legends, also see the note below. Default = NA.}
+
+\item{plot.pattern}{A vector of characters or integer representing patterns, also see the note below. Default = NA.}
+
+\item{plot.color}{A vector of characters or integer representing  colors, also see the note below. Default = NA.}
 }
 \description{
 Visualize data in X-Y plane, X-Z plane, and Y-Z
@@ -29,11 +37,13 @@ plane. The input object (matrix or data.frame) must contain at least 3
 columns.
 }
 \details{
-col.pat.table needs to be set properly. For example, given the
-vector labels consists of 5 elements as in c('pop1','pop2','pop2','pop2',
-'pop1'), the data.frame col.pat.table must contain 2 rows corresponding to
-'pop1' and 'pop2', and 3 columns to describe their characteristics (i.e.
-patterns and colors). See the section "Examples" for more details.
+Note that the vectors of plot.legend, plot.pattern, and plot.color
+need to be defined as the same length. All of these vectors need to be given
+to the function otherwise the default colors and patterns will be used.
+The vectors need to be set properly, see the section "Examples" for more details.
+
+From version 1.1.5 onward, the parameter 'col.pat.table' is removed out from the
+function.
 }
 \examples{
 
@@ -46,13 +56,14 @@ plot3views( PCs$PC, sample_labels)
 #To change colors and patterns using symbols
 all.labels <- unique(sample_labels)
 my.colors <- c('pink', 'yellow', 'cyan', 'green')
-my.patterns<- c(0,1,2,3)
-my.table <- data.frame(all.labels, my.patterns, my.colors)
-plot3views(PCs$PC, labels = sample_labels, col.pat.table = my.table)
+my.patterns <- c(0,1,2,3)
+plot3views(PCs$PC, labels = sample_labels, plot.legend = all.labels,
+plot.pattern = my.patterns, plot.color = my.colors)
 
-#To change colors and patterns using characters
-my.patterns<- c('o', 'x', '&', '#')
-#Use cbind to keep my.patterns as 'character'
-my.table <- cbind(all.labels, my.patterns, my.colors)
-plot3views(PCs$PC, labels = sample_labels, col.pat.table = my.table)
+#To change patterns using characters
+my.patterns <- c('o', 'x', '&', '#')
+#To change colors using Hex code
+my.colors <- c('#E74C3C', '#8E44AD', '#2ECC71', '#E67E22')
+plot3views(PCs$PC, labels = sample_labels, plot.legend = all.labels,
+plot.pattern = my.patterns, plot.color = my.colors)
 }

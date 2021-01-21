@@ -5,8 +5,7 @@
 \title{Calculate linear principal component analysis (PCA) from numeric data and
 Single-nucleotide polymorphism (SNP) dataset}
 \usage{
-cal.pc.linear(X, PCscore = TRUE, no.pc = NA, data.type = "linear",
-  XXT = TRUE)
+cal.pc.linear(X, PCscore = TRUE, no.pc = NA, data.type = "linear", XXT = TRUE)
 }
 \arguments{
 \item{X}{A data matrix which rows represent samples and columns represent
@@ -44,7 +43,6 @@ Single-nucleotide polymorphism (SNP) dataset in additive coding (0, 1, and 2).
 \examples{
 
 #Load simulated dataset
-\donttest{
 data(example_SNP)
 
 #Using default parameters
@@ -83,7 +81,6 @@ print(PCs$PC[1:5,1:3])
 print(PCs$evalue[1:3])
 
 plot3views(PCs$PC[,1:3], sample_labels)
-}
 }
 \seealso{
 \code{\link{cal.pc.projection}}

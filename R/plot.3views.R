@@ -10,18 +10,19 @@
 #' @param labels A vector containing row labels of X for display. All vector
 #' elements should be of type "character" (as.character). The length of
 #' vector equals the number of rows in X.
-#' @param col.pat.table A data.frame that associates colors and patterns to row
-#' labels (see labels before). It needs to contain 3 columns which represent
-#' unique labels (column 1) and associated patterns (column 2) and colors
-#' (column 3). Default = NA.
 #' @param only.row A vector that contains subset of row numbers that are
 #' selected to be plotted. Default = NA.
+#' @param plot.legend A vector of characters representing legends, also see the note below. Default = NA.
+#' @param plot.pattern A vector of characters or integer representing patterns, also see the note below. Default = NA.
+#' @param plot.color A vector of characters or integer representing  colors, also see the note below. Default = NA.
 #'
-#' @details col.pat.table needs to be set properly. For example, given the
-#' vector labels consists of 5 elements as in c('pop1','pop2','pop2','pop2',
-#' 'pop1'), the data.frame col.pat.table must contain 2 rows corresponding to
-#' 'pop1' and 'pop2', and 3 columns to describe their characteristics (i.e.
-#' patterns and colors). See the section "Examples" for more details.
+#' @details Note that the vectors of plot.legend, plot.pattern, and plot.color
+#' need to be defined as the same length. All of these vectors need to be given
+#' to the function otherwise the default colors and patterns will be used.
+#' The vectors need to be set properly, see the section "Examples" for more details.
+#'
+#' From version 1.1.5 onward, the parameter 'col.pat.table' is removed out from the
+#' function.
 #'
 #' @export
 #'
@@ -39,18 +40,25 @@
 #' #To change colors and patterns using symbols
 #' all.labels <- unique(sample_labels)
 #' my.colors <- c('pink', 'yellow', 'cyan', 'green')
-#' my.patterns<- c(0,1,2,3)
-#' my.table <- data.frame(all.labels, my.patterns, my.colors)
-#' plot3views(PCs$PC, labels = sample_labels, col.pat.table = my.table)
+#' my.patterns <- c(0,1,2,3)
+#' plot3views(PCs$PC, labels = sample_labels, plot.legend = all.labels,
+#' plot.pattern = my.patterns, plot.color = my.colors)
 #'
-#' #To change colors and patterns using characters
-#' my.patterns<- c('o', 'x', '&', '#')
-#' #Use cbind to keep my.patterns as 'character'
-#' my.table <- cbind(all.labels, my.patterns, my.colors)
-#' plot3views(PCs$PC, labels = sample_labels, col.pat.table = my.table)
+#' #To change patterns using characters
+#' my.patterns <- c('o', 'x', '&', '#')
+#' #To change colors using Hex code
+#' my.colors <- c('#E74C3C', '#8E44AD', '#2ECC71', '#E67E22')
+#' plot3views(PCs$PC, labels = sample_labels, plot.legend = all.labels,
+#' plot.pattern = my.patterns, plot.color = my.colors)
 
 
-plot3views <- function(X, labels, col.pat.table = NA, only.row = NA){
+plot3views <- function(X,
+                       labels,
+                       #col.pat.table = NA, #discontinue
+                       only.row = NA,
+                       plot.legend = NA,
+                       plot.pattern = NA,
+                       plot.color = NA){
   map.color = c("red", rgb(0, 68, 27, maxColorValue = 255),
                 "blue", rgb(231, 41, 138, maxColorValue = 255),
                 "darkorange", "black")
@@ -64,6 +72,9 @@ plot3views <- function(X, labels, col.pat.table = NA, only.row = NA){
   map.pch = c(map.pch,33:34,42,45,47,40,91,123,41,92,93,125)
   map.pch = c(map.pch,49:57,97:107,109:110,112:119,121:122)
   map.pch = c(map.pch,65:78,81:82,84:85,89)
+
+  if (class(plot.color) != "character") plot.color = as.character(plot.color)
+  if (class(plot.pattern) == "factor") plot.pattern = as.character(plot.pattern)
 
   map.pattern = c()
   for (i in 1:length(map.pch))
@@ -92,13 +103,18 @@ plot3views <- function(X, labels, col.pat.table = NA, only.row = NA){
   set_pch = NULL
   set_col = NULL
   for (k in 1:length(u.label)){
-    if (anyNA(col.pat.table)){
+    if ( anyNA(plot.legend) ||
+         anyNA(plot.pattern) ||
+         anyNA(plot.color) ||
+         (length(plot.legend) != length(plot.pattern)) ||
+         (length(plot.legend) != length(plot.color)) ||
+         (length(plot.color) != length(plot.pattern)) ){
       spch = map.pch[map.pattern[k,1]]
       scolor = map.color[map.pattern[k,2]]
     }else{
-      idx = which(col.pat.table[,1] == u.label[k])
-      spch = col.pat.table[idx,2]
-      scolor = col.pat.table[idx,3]
+      idx = which(plot.legend == u.label[k])
+      spch = plot.pattern[idx]
+      scolor = plot.color[idx]
     }
 
     if (anyNA(only.row)){
@@ -120,13 +136,18 @@ plot3views <- function(X, labels, col.pat.table = NA, only.row = NA){
   axis(side=1, labels=TRUE, line=2)
   mtext("PC3", side=1, line=0.5)
   for (k in 1:length(u.label)){
-    if (anyNA(col.pat.table)){
+    if ( anyNA(plot.legend) ||
+         anyNA(plot.pattern) ||
+         anyNA(plot.color) ||
+         (length(plot.legend) != length(plot.pattern)) ||
+         (length(plot.legend) != length(plot.color)) ||
+         (length(plot.color) != length(plot.pattern)) ){
       spch = map.pch[map.pattern[k,1]]
       scolor = map.color[map.pattern[k,2]]
     }else{
-      idx = which(col.pat.table[,1] == u.label[k])
-      spch = col.pat.table[idx,2]
-      scolor = col.pat.table[idx,3]
+      idx = which(plot.legend == u.label[k])
+      spch = plot.pattern[idx]
+      scolor = plot.color[idx]
     }
     if (anyNA(only.row)){
       points(X[labels %in% u.label[k],3],X[labels %in% u.label[k],2],col=scolor,pch=spch)
@@ -145,13 +166,18 @@ plot3views <- function(X, labels, col.pat.table = NA, only.row = NA){
   axis(side=4, labels=TRUE, line=2)
   mtext("PC3", side=4, line=0.5)
   for (k in 1:length(u.label)){
-    if (anyNA(col.pat.table)){
+    if ( anyNA(plot.legend) ||
+         anyNA(plot.pattern) ||
+         anyNA(plot.color) ||
+         (length(plot.legend) != length(plot.pattern)) ||
+         (length(plot.legend) != length(plot.color)) ||
+         (length(plot.color) != length(plot.pattern)) ){
       spch = map.pch[map.pattern[k,1]]
       scolor = map.color[map.pattern[k,2]]
     }else{
-      idx = which(col.pat.table[,1] == u.label[k])
-      spch = col.pat.table[idx,2]
-      scolor = col.pat.table[idx,3]
+      idx = which(plot.legend == u.label[k])
+      spch = plot.pattern[idx]
+      scolor = plot.color[idx]
     }
 
     if (anyNA(only.row)){

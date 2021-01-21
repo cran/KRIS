@@ -10,8 +10,8 @@ test_that("Projected PCA for SNPs",{
                            labels = sample_labels, no.pc = 3)
 
   expect_length(PCs, 4)
-  expect_length(PCs$label, 753)
-  expect_length(PCs$status, 753)
+  expect_length(PCs$label, 103)
+  expect_length(PCs$status, 103)
   expect_null(PCs$id)
-  expect_length(PCs$PC, 2259)
+  expect_length(PCs$PC, 309)
 })

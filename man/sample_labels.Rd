@@ -4,7 +4,9 @@
 \name{sample_labels}
 \alias{sample_labels}
 \title{Synthetic dataset containing population labels for the dataset simsnp.}
-\format{A vector with 753 elements.}
+\format{
+A vector with 753 elements.
+}
 \usage{
 data(example_SNP)
 }

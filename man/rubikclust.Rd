@@ -29,7 +29,6 @@ The function rubikClust is able to take up to 3 variables
 first three columns are used; the other columns are ignored.
 }
 \examples{
-\donttest{
 #Load simulated dataset
 data(example_SNP)
 
@@ -58,5 +57,4 @@ table(groups)
 #Check the plot, highlight the points according to the clustering result
 mylabels <- paste0("group", as.factor(groups))
 plot3views( PCs$PC, labels = mylabels)
-}
 }

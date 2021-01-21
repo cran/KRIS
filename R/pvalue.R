@@ -73,11 +73,8 @@ fst.hudson <-function(X, idx.p1, idx.p2){
   }
 
   set.fst = apply(X,2,prestep.fst.one.marker,idx.p1=idx.p1, idx.p2=idx.p2)
-
-  # Bhatia, et al 2013, "This is the basis of our recommendation that FST be estimated as a ratio of averages."
-
-  fst = mean(set.fst[1,],na.rm=T) / mean(set.fst[2,],na.rm=T)
-  #fst = mean(set.fst[1,]/set.fst[2,],na.rm = T)
+  #fst = mean(set.fst[1,],na.rm=T) / mean(set.fst[2,],na.rm=T)
+  fst = mean(set.fst[1,]/set.fst[2,],na.rm = T)
 
   return(fst)
 }

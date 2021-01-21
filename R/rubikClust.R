@@ -19,7 +19,6 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' #Load simulated dataset
 #' data(example_SNP)
 #'
@@ -48,7 +47,7 @@
 #' #Check the plot, highlight the points according to the clustering result
 #' mylabels <- paste0("group", as.factor(groups))
 #' plot3views( PCs$PC, labels = mylabels)
-#' }
+
 
 
 rubikclust <- function(X, min.space = 0.4, rotation = TRUE){

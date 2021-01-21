@@ -2,11 +2,17 @@
 % Please edit documentation in R/principal.component.R
 \name{cal.pc.projection}
 \alias{cal.pc.projection}
-\title{Calculate linear principal component analysis (PCA) with projection method
+\title{Calculate linear principal component analysis (PCA) with a projection method
 for Single-nucleotide polymorphism (SNP) dataset.}
 \usage{
-cal.pc.projection(X, status, individual_id = NULL, labels = NULL,
-  no.pc = NA, data.type = "linear")
+cal.pc.projection(
+  X,
+  status,
+  individual_id = NULL,
+  labels = NULL,
+  no.pc = NA,
+  data.type = "linear"
+)
 }
 \arguments{
 \item{X}{A data matrix which rows represent samples and columns represent
@@ -47,13 +53,12 @@ are required. First, PCA is performed only in control group, then project
 the scores from control group into case group.
 }
 \examples{
-\donttest{
 
 data(example_SNP)
 
 #Create a random list of disease status, 1 = Control and 2 = Case
 
-ind_status <- sample(c(1,2), size = length(sample_labels), replace = T)
+ind_status <- sample(c(1,2), size = length(sample_labels), replace = TRUE)
 
 PCs <- cal.pc.projection(simsnp$snp, status = ind_status,
 labels = sample_labels)
@@ -78,7 +83,6 @@ print(PCs$PC[1:5,1:3])
 
 plot3views(PCs$PC[,1:3], PCs$label)
 
-}
 
 }
 \seealso{

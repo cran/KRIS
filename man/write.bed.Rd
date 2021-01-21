@@ -2,7 +2,7 @@
 % Please edit documentation in R/plinkformat.R
 \name{write.bed}
 \alias{write.bed}
-\title{Write an list of SNP object to the binary PLINK format (BED, BIM, and FAM)}
+\title{Write a list of SNP object to the binary PLINK format (BED, BIM, and FAM)}
 \usage{
 write.bed(object, file)
 }

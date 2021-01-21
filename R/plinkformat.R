@@ -31,7 +31,6 @@
 #'
 #' @examples
 #'
-#' \donttest{
 #' #Use the example files embedded in the package.
 #' bed <- system.file("extdata", "example_SNP.bed", package="KRIS")
 #' bim <- system.file("extdata", "example_SNP.bim", package="KRIS")
@@ -49,7 +48,7 @@
 #'
 #' #Preview $ind.info
 #' head(snp$ind.info)
-#' }
+
 read.bed <- function(bed, bim, fam, only.snp = FALSE){
 
   ret = NA
@@ -67,11 +66,11 @@ read.bed <- function(bed, bim, fam, only.snp = FALSE){
     return(ret)
   }
   #Read BIM file
-  snp.info <- read.table(bim,header=FALSE)
+  snp.info <- read.table(bim,header=FALSE, colClasses = c("factor","factor","factor","factor","factor","factor"))
   colnames(snp.info) = c("chr","ID","GD","position","allele1","allele2")
 
   #Read FAM file
-  ind.info = read.table(fam,header=FALSE)
+  ind.info = read.table(fam,header=FALSE, colClasses = c("factor","factor","factor","factor","factor","factor"))
   colnames(ind.info) = c("FamID","IndID","PatID","MatID","sex","phenotype")
 
   no.ind = dim(ind.info)[1]
@@ -136,7 +135,7 @@ read.bed <- function(bed, bim, fam, only.snp = FALSE){
 }
 
 
-#' Write an list of SNP object to the binary PLINK format (BED, BIM, and FAM)
+#' Write a list of SNP object to the binary PLINK format (BED, BIM, and FAM)
 #'
 #' @description Write a SNP object to the files in the binary
 #' PLINK format. For more information about the binary PLINK format, please
